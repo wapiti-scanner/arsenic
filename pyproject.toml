@@ -39,7 +39,7 @@ pytest-cov = "^2.10.1"
 asyncio-extras = "^1.3.2"
 pre-commit = "^2.7.1"
 black = "^22.10.0"
-Pillow = "^8.1.0"
+Pillow = "^9"
 
 [tool.poetry.scripts]
 arsenic-check-ie11 = "arsenic.helpers:check_ie11_environment_cli"
