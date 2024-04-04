@@ -2,7 +2,7 @@ import abc
 import asyncio
 import re
 import sys
-from distutils.version import StrictVersion
+from packaging import version
 from functools import partial
 from typing import List, TextIO, Optional
 
@@ -91,11 +91,11 @@ class Geckodriver(Service):
                     "disable version checking, set `version_check` to "
                     "`False`."
                 )
-            version_str = match.group(1)
-            version = StrictVersion(version_str)
-            if version < StrictVersion("0.16.1"):
+            binary_version_str = match.group(1)
+            binary_version = version.parse(binary_version_str)
+            if binary_version < version.parse("0.16.1"):
                 raise ValueError(
-                    f"Geckodriver version {version_str} is too old. 0.16.1 or "
+                    f"Geckodriver version {binary_version_str} is too old. 0.16.1 or "
                     f"higher is required. To disable version checking, set "
                     f"`version_check` to `False`."
                 )
