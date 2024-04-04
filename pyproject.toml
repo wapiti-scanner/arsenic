@@ -26,7 +26,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.8"
 attrs = ">=17.4.0"
-structlog = "^20.1.0"
+structlog = "^24"
 aiohttp = ">=3"
 packaging = ">=23"
 
