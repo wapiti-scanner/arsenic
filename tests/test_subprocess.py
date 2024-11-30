@@ -5,7 +5,7 @@ from asyncio import SelectorEventLoop
 
 import pytest
 
-from arsenic.subprocess import ThreadedSubprocessImpl, AsyncioSubprocessImpl
+from wapiti_arsenic.subprocess import ThreadedSubprocessImpl, AsyncioSubprocessImpl
 
 pytestmark = [pytest.mark.asyncio]
 

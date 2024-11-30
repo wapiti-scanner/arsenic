@@ -1,9 +1,9 @@
 import pytest
 
-from arsenic.connection import strip_auth
-from arsenic.http import BasicAuth
-from arsenic.services import auth_or_string
-from arsenic.utils import px_to_number
+from wapiti_arsenic.connection import strip_auth
+from wapiti_arsenic.http import BasicAuth
+from wapiti_arsenic.services import auth_or_string
+from wapiti_arsenic.utils import px_to_number
 
 
 @pytest.mark.parametrize(

@@ -1,5 +1,5 @@
-from arsenic.actions import Mouse, chain
-from arsenic.session import Element, Session
+from wapiti_arsenic.actions import Mouse, chain
+from wapiti_arsenic.session import Element, Session
 
 
 async def drag_and_drop(
@@ -20,7 +20,7 @@ from functools import wraps, partial
 
 from aiohttp.web import Response, Application
 
-from arsenic import get_session, browsers, services
+from wapiti_arsenic import get_session, browsers, services
 
 
 async def handle(request):

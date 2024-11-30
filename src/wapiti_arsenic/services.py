@@ -10,12 +10,12 @@ import aiohttp.client_exceptions
 import attr
 from aiohttp import ClientSession
 
-from arsenic.connection import Connection, RemoteConnection
-from arsenic.http import Auth, BasicAuth
-from arsenic.subprocess import get_subprocess_impl
-from arsenic.utils import free_port
-from arsenic.webdriver import WebDriver
-from arsenic.errors import ArsenicError
+from wapiti_arsenic.connection import Connection, RemoteConnection
+from wapiti_arsenic.http import Auth, BasicAuth
+from wapiti_arsenic.subprocess import get_subprocess_impl
+from wapiti_arsenic.utils import free_port
+from wapiti_arsenic.webdriver import WebDriver
+from wapiti_arsenic.errors import ArsenicError
 
 
 async def tasked(coro):

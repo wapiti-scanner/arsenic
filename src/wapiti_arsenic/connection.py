@@ -12,7 +12,7 @@ from zipfile import ZIP_DEFLATED, ZipFile
 from aiohttp import ClientSession
 from structlog import get_logger
 
-from arsenic import errors, constants
+from wapiti_arsenic import errors, constants
 
 log = get_logger()
 

@@ -6,11 +6,11 @@ from typing import Awaitable, Callable, Any, List, Dict, Tuple, Iterator
 
 import attr
 
-from arsenic import constants
-from arsenic.connection import Connection, unwrap
-from arsenic.constants import SelectorType, WindowType
-from arsenic.errors import NoSuchElement, OperationNotSupported
-from arsenic.utils import Rect
+from wapiti_arsenic import constants
+from wapiti_arsenic.connection import Connection, unwrap
+from wapiti_arsenic.constants import SelectorType, WindowType
+from wapiti_arsenic.errors import NoSuchElement, OperationNotSupported
+from wapiti_arsenic.utils import Rect
 
 UNSET = object()
 

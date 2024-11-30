@@ -49,7 +49,7 @@ Google Chrome Device Emulation
 
 To enable device emulation mode with Google Chrome, you can use::
 
-    from arsenic import services, browsers, get_session
+    from wapiti_arsenic import services, browsers, get_session
 
     service = services.Chromedriver()
 
@@ -71,7 +71,7 @@ Google Chrome Device Emulation And Headless
 To enable device emulation mode and headless mode at the same time with Google Chrome, you can use::
 
 
-    from arsenic import services, browsers
+    from wapiti_arsenic import services, browsers
 
     service = services.Chromedriver(binary='chromedriver')
 

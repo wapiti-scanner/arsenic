@@ -1,7 +1,7 @@
 import pytest
 import sys
 
-from arsenic.services import Geckodriver
+from wapiti_arsenic.services import Geckodriver
 
 pytestmark = [pytest.mark.asyncio]
 

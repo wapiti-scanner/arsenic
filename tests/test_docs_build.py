@@ -4,7 +4,7 @@ from tempfile import TemporaryDirectory
 
 import os
 
-import arsenic
+import wapiti_arsenic
 from .utils import find_binary
 
 DOCS_DIR = os.environ.get(

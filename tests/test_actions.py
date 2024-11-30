@@ -1,8 +1,8 @@
 from operator import itemgetter
 
-from arsenic.actions import Mouse, Touch, chain
-from arsenic.session import Element
-from arsenic import constants
+from wapiti_arsenic.actions import Mouse, Touch, chain
+from wapiti_arsenic.session import Element
+from wapiti_arsenic import constants
 
 
 ELEMENT_ONE = Element("1", None, None)
