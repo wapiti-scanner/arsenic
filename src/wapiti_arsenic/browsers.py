@@ -1,4 +1,4 @@
-from arsenic.session import Session
+from wapiti_arsenic.session import Session
 
 
 class Browser:

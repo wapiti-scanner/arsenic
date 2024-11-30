@@ -1,12 +1,12 @@
 [tool.poetry]
-name = "arsenic"
-version = "21.8"
+name = "wapiti_arsenic"
+version = "21.8+remove-distutils"
 description = "Asynchronous WebDriver client"
 authors = ["Jonas Obrist <jonas.obrist@hennge.com>"]
 license = "Apache-2.0"
 readme = "README.md"
-homepage = "https://github.com/HDE/arsenic"
-repository = "https://github.com/HDE/arsenic"
+homepage = "https://github.com/wapiti-scanner/arsenic/"
+repository = "https://github.com/wapiti-scanner/arsenic/"
 documentation = "https://arsenic.readthedocs.io/en/latest/"
 keywords = ["asyncio"]
 classifiers = [

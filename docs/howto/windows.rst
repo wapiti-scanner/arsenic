@@ -30,7 +30,7 @@ to explicitly pass the absolute path to the services binary to the service.
 For example, if you installed ``geckodriver.exe`` to ``C:\geckodriver\geckodriver.exe``,
 you have to instantiate your arsenic session like this::
 
-    from arsenic import get_session, services, browsers
+    from wapiti_arsenic import get_session, services, browsers
 
     async def example():
         service = services.Geckodriver(

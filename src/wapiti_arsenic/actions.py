@@ -4,8 +4,8 @@ from typing import Sequence, Any, Iterator, List, Dict, Optional
 
 import attr
 
-from arsenic import constants
-from arsenic.session import Element
+from wapiti_arsenic import constants
+from wapiti_arsenic.session import Element
 
 
 @attr.s

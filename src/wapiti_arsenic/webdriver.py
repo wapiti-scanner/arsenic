@@ -3,10 +3,10 @@ from typing import Awaitable, Callable, List, Any, Union, Type
 
 import time
 
-from arsenic.browsers import Browser
-from arsenic.connection import Connection
-from arsenic.errors import ArsenicError, ArsenicTimeout, SessionStartError
-from arsenic.session import Session
+from wapiti_arsenic.browsers import Browser
+from wapiti_arsenic.connection import Connection
+from wapiti_arsenic.errors import ArsenicError, ArsenicTimeout, SessionStartError
+from wapiti_arsenic.session import Session
 
 
 class SessionContext:

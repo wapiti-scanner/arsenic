@@ -5,12 +5,12 @@ from typing import List, Any, Dict
 import pytest
 from PIL import Image
 
-from arsenic.actions import Keyboard, Mouse, chain
-from arsenic.browsers import Firefox
-from arsenic.connection import RemoteConnection
-from arsenic.constants import SelectorType, WindowType
-from arsenic.errors import NoSuchElement
-from arsenic.utils import Rect
+from wapiti_arsenic.actions import Keyboard, Mouse, chain
+from wapiti_arsenic.browsers import Firefox
+from wapiti_arsenic.connection import RemoteConnection
+from wapiti_arsenic.constants import SelectorType, WindowType
+from wapiti_arsenic.errors import NoSuchElement
+from wapiti_arsenic.utils import Rect
 
 pytestmark = [pytest.mark.asyncio]
 

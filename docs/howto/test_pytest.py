@@ -2,7 +2,7 @@ import pytest
 
 from aiohttp.web import Application, Response
 
-from arsenic import start_session, services, browsers, stop_session
+from wapiti_arsenic import start_session, services, browsers, stop_session
 
 pytestmark = pytest.mark.asyncio
 

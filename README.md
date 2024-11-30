@@ -18,9 +18,9 @@ Let's run a local Firefox instance.
 
 ```python
 
-from arsenic import get_session
-from arsenic.browsers import Firefox
-from arsenic.services import Geckodriver
+from wapiti_arsenic import get_session
+from wapiti_arsenic.browsers import Firefox
+from wapiti_arsenic.services import Geckodriver
 
 
 async def example():

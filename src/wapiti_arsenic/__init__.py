@@ -1,8 +1,8 @@
 import attr
 
-from arsenic.browsers import Browser
-from arsenic.services import Service
-from arsenic.session import Session
+from wapiti_arsenic.browsers import Browser
+from wapiti_arsenic.services import Service
+from wapiti_arsenic.session import Session
 
 
 @attr.s

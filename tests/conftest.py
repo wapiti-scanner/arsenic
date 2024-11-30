@@ -8,7 +8,7 @@ import pytest
 from asyncio_extras import async_contextmanager
 from aiohttp.web import TCPSite, AppRunner
 
-from arsenic import Session, browsers, get_session, services
+from wapiti_arsenic import Session, browsers, get_session, services
 from tests.utils import find_binary
 from .app import build_app
 from .utils import null_context
