@@ -3,15 +3,15 @@ import os
 from contextlib import contextmanager
 from subprocess import check_call
 from typing import Any, AsyncContextManager, Callable, Dict, Optional, Type
+import asyncio
+import uvicorn
 
 import pytest
 from asyncio_extras import async_contextmanager
-from aiohttp.web import TCPSite, AppRunner
 
 from wapiti_arsenic import Session, browsers, get_session, services
 from tests.utils import find_binary
 from .app import build_app
-from .utils import null_context
 
 
 def local_session_factory(
@@ -119,16 +119,17 @@ async def session(root_url, request) -> Session:
 
 
 @pytest.fixture
-async def root_url(event_loop):
-    application = build_app()
-    runner = AppRunner(application)
-    await runner.setup()
-    site = TCPSite(runner, "127.0.0.1", 0)
-    await site.start()
+async def root_url():
+    app = build_app()
+    config = uvicorn.Config(app, host="127.0.0.1", port=0)
+    server = uvicorn.Server(config)
+    task = asyncio.create_task(server.serve())
+    while not server.started:
+        await asyncio.sleep(0.01)
+
     try:
-        for socket in site._server.sockets:
-            host, port = socket.getsockname()
-            break
+        host, port = server.servers[0].sockets[0].getsockname()
         yield f"http://{host}:{port}"
     finally:
-        await runner.cleanup()
+        server.should_exit = True
+        await task

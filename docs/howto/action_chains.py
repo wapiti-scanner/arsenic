@@ -1,3 +1,12 @@
+import asyncio
+from functools import partial, wraps
+
+import uvicorn
+from starlette.applications import Starlette
+from starlette.responses import HTMLResponse
+from starlette.routing import Route
+
+from wapiti_arsenic import browsers, get_session, services
 from wapiti_arsenic.actions import Mouse, chain
 from wapiti_arsenic.session import Element, Session
 
@@ -15,19 +24,9 @@ async def drag_and_drop(
     await session.perform_actions(actions)
 
 
-import asyncio
-from functools import wraps, partial
-
-from aiohttp.web import Response, Application
-
-from wapiti_arsenic import get_session, browsers, services
-
-
 async def handle(request):
-    return Response(
-        status=200,
-        content_type="text/html",
-        body="""<html>
+    return HTMLResponse(
+        """<html>
 <body>
   <input id="range" type="range" min="1" max="100" value="1" /> <span id="output" />
   <script>
@@ -38,32 +37,34 @@ async def handle(request):
     window.INITIALIZED = true;
   </script>
 </body>
-</html>""",
+</html>"""
     )
 
 
 def build_app():
-    app = Application()
-    app.router.add_get("/", handle)
-    return app
+    routes = [Route("/", handle)]
+    return Starlette(routes=routes)
 
 
 class RunApp:
     def __init__(self):
         self.app = build_app()
         self.server = None
+        self.task = None
 
     async def __aenter__(self):
-        self.server = await asyncio.get_event_loop().create_server(
-            self.app.make_handler(), "127.0.0.1", 0
-        )
-        for socket in self.server.sockets:
-            host, port = socket.getsockname()
+        config = uvicorn.Config(self.app, host="127.0.0.1", port=0)
+        self.server = uvicorn.Server(config)
+        self.task = asyncio.create_task(self.server.serve())
+        while not self.server.started:
+            await asyncio.sleep(0.01)
+        host, port = self.server.servers[0].sockets[0].getsockname()
         return f"http://{host}:{port}"
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if self.server:
-            self.server.close()
+            self.server.should_exit = True
+            await self.task
 
 
 def with_app_and_session(coro):
@@ -90,11 +91,10 @@ async def run_drag_and_drop(session):
     return values
 
 
-def main():
-    loop = asyncio.get_event_loop()
-    values = loop.run_until_complete(run_drag_and_drop())
+async def main():
+    values = await run_drag_and_drop()
     print(f"{values[0]} -> {values[1]}")
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

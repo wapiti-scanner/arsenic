@@ -8,7 +8,7 @@ import wapiti_arsenic
 from .utils import find_binary
 
 DOCS_DIR = os.environ.get(
-    "DOCS_DIR", Path(arsenic.__file__).parent.parent.parent / "docs"
+    "DOCS_DIR", Path(wapiti_arsenic.__file__).parent.parent.parent / "docs"
 )
 
 

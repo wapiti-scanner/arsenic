@@ -9,7 +9,7 @@ from typing import Any, Tuple
 from urllib.parse import urlparse, urlunparse
 from zipfile import ZIP_DEFLATED, ZipFile
 
-from aiohttp import ClientSession
+import httpx
 from structlog import get_logger
 
 from wapiti_arsenic import errors, constants
@@ -81,7 +81,7 @@ def check_response_error(*, status: int, data: Any) -> None:
 
 
 class Connection:
-    def __init__(self, session: ClientSession, prefix: str):
+    def __init__(self, session: httpx.AsyncClient, prefix: str):
         self.session = session
         self.prefix = prefix
 
@@ -100,26 +100,26 @@ class Connection:
         log.info(
             "request", url=strip_auth(full_url), method=method, header=header, body=body
         )
-        async with self.session.request(
-            url=full_url, method=method, headers=header, data=body, timeout=timeout
-        ) as response:
-            response_body = await response.read()
-            try:
-                data = json.loads(response_body)
-            except JSONDecodeError as exc:
-                log.error("json-decode", body=response_body)
-                data = {"error": "!internal", "message": str(exc), "stacktrace": ""}
-            wrap_screen(data)
-            log.info(
-                "response",
-                url=strip_auth(full_url),
-                method=method,
-                body=body,
-                response=response,
-                data=data,
-            )
-            check_response_error(data=data, status=response.status)
-            return response.status, data
+        response = await self.session.request(
+            url=full_url, method=method, headers=header, content=body, timeout=timeout
+        )
+        response_body = await response.aread()
+        try:
+            data = json.loads(response_body)
+        except JSONDecodeError as exc:
+            log.error("json-decode", body=response_body)
+            data = {"error": "!internal", "message": str(exc), "stacktrace": ""}
+        wrap_screen(data)
+        log.info(
+            "response",
+            url=strip_auth(full_url),
+            method=method,
+            body=body,
+            response=repr(response),
+            data=data,
+        )
+        check_response_error(data=data, status=response.status_code)
+        return response.status_code, data
 
     async def upload_file(self, path: Path) -> Path:
         log.info("upload-file", path=path, resolved_path=path)
