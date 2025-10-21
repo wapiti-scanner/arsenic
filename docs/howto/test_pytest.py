@@ -1,19 +1,24 @@
+import asyncio
+
 import pytest
+import uvicorn
+from starlette.applications import Starlette
+from starlette.responses import HTMLResponse
+from starlette.routing import Route
 
-from aiohttp.web import Application, Response
-
-from wapiti_arsenic import start_session, services, browsers, stop_session
+from wapiti_arsenic import browsers, services, start_session, stop_session
 
 pytestmark = pytest.mark.asyncio
 
 
 async def index(request):
-    data = await request.post()
-    name = data.get("name", "World")
-    return Response(
-        status=200,
-        content_type="text/html",
-        body=f"""<html>
+    if request.method == "POST":
+        data = await request.form()
+        name = data.get("name", "World")
+    else:
+        name = "World"
+    return HTMLResponse(
+        f"""<html>
     <body>
         <h1>Hello {name}</h1>
         <form method='post' action='/'>
@@ -21,26 +26,30 @@ async def index(request):
             <input type='submit' />
         </form>
     </body>
-</html>""",
+</html>"""
     )
 
 
 def build_app():
-    app = Application()
-    app.router.add_route("*", "/", index)
-    return app
+    routes = [Route("/", index, methods=["GET", "POST"])]
+    return Starlette(routes=routes)
 
 
 @pytest.fixture
-async def app(event_loop):
+async def app():
     application = build_app()
-    server = await event_loop.create_server(application.make_handler(), "127.0.0.1", 0)
+    config = uvicorn.Config(application, host="127.0.0.1", port=0)
+    server = uvicorn.Server(config)
+    task = asyncio.create_task(server.serve())
+    while not server.started:
+        await asyncio.sleep(0.01)
+
     try:
-        for socket in server.sockets:
-            host, port = socket.getsockname()
+        host, port = server.servers[0].sockets[0].getsockname()
         yield f"http://{host}:{port}"
     finally:
-        server.close()
+        server.should_exit = True
+        await task
 
 
 @pytest.fixture

@@ -20,7 +20,7 @@ code. Use cases include testing of web applications, load testing, automating
 websites, web scraping or anything else you need a web browser for. It uses real
 web browsers using the `Webdriver`_ specification.
 
-While it is built on top of `aiohttp`_, it can be used from any asyncio-compatible
+While it is built on top of `httpx`_, it can be used from any asyncio-compatible
 framework, such as `Tornado`_.
 
 
@@ -67,7 +67,7 @@ Indices and tables
 
 
 .. _Webdriver: https://w3c.github.io/webdriver/webdriver-spec.html
-.. _aiohttp: https://aiohttp.readthedocs.io/en/stable/
+.. _httpx: https://www.python-httpx.org/
 .. _tornado: https://tornado.readthedocs.io/en/stable/
 .. _Github: https://github.com/hde/arsenic
 .. _PyPI: https://pypi.org/project/arsenic/

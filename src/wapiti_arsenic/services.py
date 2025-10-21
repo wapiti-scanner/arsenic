@@ -2,29 +2,28 @@ import abc
 import asyncio
 import re
 import sys
-from packaging import version
 from functools import partial
 from typing import List, TextIO, Optional
 
-import aiohttp.client_exceptions
 import attr
-from aiohttp import ClientSession
+import httpx
+from packaging import version
 
 from wapiti_arsenic.connection import Connection, RemoteConnection
+from wapiti_arsenic.errors import ArsenicError
 from wapiti_arsenic.http import Auth, BasicAuth
 from wapiti_arsenic.subprocess import get_subprocess_impl
 from wapiti_arsenic.utils import free_port
 from wapiti_arsenic.webdriver import WebDriver
-from wapiti_arsenic.errors import ArsenicError
 
 
 async def tasked(coro):
     return await asyncio.get_event_loop().create_task(coro)
 
 
-async def check_service_status(session: ClientSession, url: str) -> bool:
-    async with session.get(url + "/status") as response:
-        return 200 <= response.status < 300
+async def check_service_status(client: httpx.AsyncClient, url: str) -> bool:
+    response = await client.get(url + "/status")
+    return 200 <= response.status_code < 300
 
 
 async def subprocess_based_service(
@@ -38,27 +37,26 @@ async def subprocess_based_service(
         impl = get_subprocess_impl()
         process = await impl.start_process(cmd, log_file)
         closers.append(partial(impl.stop_process, process))
-        session = ClientSession()
-        closers.append(session.close)
-        count = 0
+        client = httpx.AsyncClient()
+        closers.append(client.aclose)
 
         async def wait_service():
             # Wait for service with exponential back-off
             for i in range(-10, 9999):
                 try:
-                    ok = await tasked(check_service_status(session, service_url))
-                except aiohttp.client_exceptions.ClientConnectorError:
+                    ok = await tasked(check_service_status(client, service_url))
+                except httpx.ConnectError:
                     # We possibly checked too quickly
                     ok = False
                 if ok:
                     return
-                await asyncio.sleep(start_timeout * 2**i)
+                await asyncio.sleep(start_timeout * 2 ** i)
 
         try:
             await asyncio.wait_for(wait_service(), timeout=start_timeout)
         except asyncio.TimeoutError:
             raise ArsenicError("not starting?")
-        return WebDriver(Connection(session, service_url), closers)
+        return WebDriver(Connection(client, service_url), closers)
     except:
         for closer in reversed(closers):
             await closer()
@@ -168,9 +166,9 @@ class Remote(Service):
         if self.auth:
             headers.update(self.auth.get_headers())
         try:
-            session = ClientSession(headers=headers)
-            closers.append(session.close)
-            return WebDriver(RemoteConnection(session, self.url), closers)
+            client = httpx.AsyncClient(headers=headers)
+            closers.append(client.aclose)
+            return WebDriver(RemoteConnection(client, self.url), closers)
         except:
             for closer in reversed(closers):
                 await closer()

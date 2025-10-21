@@ -5,7 +5,7 @@ A common usage of webdrivers is for testing web applications. Thanks to the
 async nature of arsenic, you can test your async web applications from the same
 process and thread as you run your application.
 
-In this guide, we will have a small `aiohttp`_ based web application and test
+In this guide, we will have a small `starlette`_ based web application and test
 it using `pytest`_ and `pytest-asyncio`_.
 
 Prerequisites
@@ -24,7 +24,7 @@ Create a virtualenv and install the required dependencies:
     python3.6 -m venv env
     env/bin/pip install --upgrade pip
     env/bin/pip install --pre arsenic
-    env/bin/pip install pytest-asyncio
+    env/bin/pip install pytest-asyncio starlette uvicorn
 
 App
 ***
@@ -32,7 +32,7 @@ App
 Our app will have a single handler:
 
 .. literalinclude:: test_pytest.py
-    :lines: 10-27
+    :lines: 14-35
 
 
 Fixture
@@ -43,7 +43,7 @@ runs our app and provides the base url to it, since we will run it on a random
 port:
 
 .. literalinclude:: test_pytest.py
-    :lines: 30-43
+    :lines: 38-53
 
 
 Arsenic Fixture
@@ -53,7 +53,7 @@ We will also write a fixture for arsenic, which depends on the app fixture and
 provides a running Firefox session bound to the app:
 
 .. literalinclude:: test_pytest.py
-    :lines: 46-56
+    :lines: 55-62
 
 
 Test
@@ -64,7 +64,7 @@ Hello World, and if we submit the form it will become Hello followed by what
 we put into the text field:
 
 .. literalinclude:: test_pytest.py
-    :lines: 59-70
+    :lines: 64-75
 
 Putting it all together
 ***********************
@@ -72,25 +72,25 @@ Putting it all together
 For this all to work, we'll need a few imports:
 
 .. literalinclude:: test_pytest.py
-    :lines: 1-5
+    :lines: 1-9
 
 And we also need to mark the file as asyncio for pytest to support async
 functions:
 
 .. literalinclude:: test_pytest.py
-    :lines: 7
+    :lines: 11
 
 Now to put it all together, create a file called ``test_pytest.py`` and insert
 the following code:
 
 
 .. literalinclude:: test_pytest.py
-    :emphasize-lines: 59-70
+    :emphasize-lines: 64-75
 
 To run it, simply execute ``pytest test_pytest.py``.
 
 
-.. _aiohttp: https://aiohttp.readthedocs.org/en/latest/
+.. _starlette: https://www.starlette.io/
 .. _pytest: https://docs.pytest.org/en/latest/
 .. _pytest-asyncio: https://github.com/pytest-dev/pytest-asyncio
 

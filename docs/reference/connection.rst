@@ -14,8 +14,8 @@
     Connection class to use for communication with a webdriver. This class
     operates with a ``prefix`` to make it easier to use internally.
 
-    :param session: Aiohttp client session.
-    :type session: :py:class:`aiohttp.client.ClientSession`
+    :param session: Httpx client session.
+    :type session: :py:class:`httpx.AsyncClient`
     :param str prefix: Prefix for this connection.
 
     .. py:method:: request(*, url, method, data=None, raw=False)
