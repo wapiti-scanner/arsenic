@@ -1,0 +1,13 @@
+<html>
+<body>
+  <input id="key_input" type="text" onkeydown="handleKey(event)">
+  <span id="output"></span>
+  <script>
+    function handleKey(event) {
+      if (event.key === "Enter") {
+        document.getElementById('output').textContent = 'Enter was pressed';
+      }
+    }
+  </script>
+</body>
+</html>

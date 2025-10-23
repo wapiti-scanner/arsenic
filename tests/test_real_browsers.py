@@ -10,22 +10,24 @@ from wapiti_arsenic.browsers import Firefox
 from wapiti_arsenic.connection import RemoteConnection
 from wapiti_arsenic.constants import SelectorType, WindowType
 from wapiti_arsenic.errors import NoSuchElement
+from wapiti_arsenic.keys import ENTER
 from wapiti_arsenic.utils import Rect
 
-pytestmark = [pytest.mark.asyncio]
 
-
+@pytest.mark.asyncio
 async def test_get_page_source(session):
     await session.get("/")
     assert "Hello World!" in await session.get_page_source()
 
 
+@pytest.mark.asyncio
 async def test_element_not_found(session):
     await session.get("/")
     with pytest.raises(NoSuchElement):
         await session.get_element("h2")
 
 
+@pytest.mark.asyncio
 async def test_simple_form_submit(session):
     await session.get("/html/")
     field = await session.wait_for_element(5, 'input[name="field"]')
@@ -46,12 +48,14 @@ async def test_simple_form_submit(session):
         (SelectorType.xpath, ".//h2", "Title Here"),
     ],
 )
+@pytest.mark.asyncio
 async def test_selector_types(session, using, selector, result):
     await session.get("/selectors/")
     element = await session.wait_for_element(5, selector, using)
     assert result == await element.get_text()
 
 
+@pytest.mark.asyncio
 async def test_displayed(session):
     await session.get("/js/")
     button = await session.wait_for_element(5, "button")
@@ -61,6 +65,7 @@ async def test_displayed(session):
     assert await session.wait(5, div.is_displayed)
 
 
+@pytest.mark.asyncio
 async def test_execute_script(session):
     await session.get("/js/")
     div = await session.wait_for_element(5, "div")
@@ -71,6 +76,7 @@ async def test_execute_script(session):
     assert await session.wait(5, div.is_displayed)
 
 
+@pytest.mark.asyncio
 async def test_cookies(session):
     await session.get("/cookie/")
     h2 = await session.wait_for_element(5, "h2")
@@ -85,6 +91,7 @@ async def test_cookies(session):
     assert "" == await h2.get_text()
 
 
+@pytest.mark.asyncio
 async def test_chained_actions(session):
     if isinstance(session.browser, Firefox) and isinstance(
         session.driver.connection, RemoteConnection
@@ -135,6 +142,7 @@ async def test_chained_actions(session):
     await check(actions, "")
 
 
+@pytest.mark.asyncio
 async def test_get_screenshot(session):
     await session.get("/screenshot/")
     rect = await session.wait_for_element(5, "#rect")
@@ -149,6 +157,7 @@ async def test_get_screenshot(session):
     assert color == (254, 220, 186, 255)
 
 
+@pytest.mark.asyncio
 async def test_get_rect(session):
     await session.get("/screenshot/")
     ele = await session.get_element("#rect")
@@ -156,6 +165,7 @@ async def test_get_rect(session):
     assert rect == Rect(0, 0, 100, 100)
 
 
+@pytest.mark.asyncio
 async def test_file_upload(session, tmpdir):
     path = Path(str(tmpdir)) / "file.txt"
     payload = secrets.token_urlsafe()
@@ -170,6 +180,7 @@ async def test_file_upload(session, tmpdir):
     assert payload == await contents_span.get_text()
 
 
+@pytest.mark.asyncio
 async def test_change_window(session):
     handles = await session.get_window_handles()
     assert len(handles) == 1
@@ -188,6 +199,7 @@ async def test_change_window(session):
     assert current == handles[2]
 
 
+@pytest.mark.asyncio
 async def test_request(session):
     url = "/window/handles"
     handles = await session.request(url)
@@ -195,6 +207,7 @@ async def test_request(session):
 
 
 @pytest.mark.parametrize("window_type", [WindowType.tab, WindowType.window])
+@pytest.mark.asyncio
 async def test_new_window(session, window_type):
     new_window_data: Dict[str, Any] = await session.new_window(window_type)
     assert new_window_data["type"] == window_type.value
@@ -202,3 +215,12 @@ async def test_new_window(session, window_type):
     handles: List[str] = await session.get_window_handles()
     assert new_handle in handles
     assert len(handles) == 2
+
+
+@pytest.mark.asyncio
+async def test_send_keys(session):
+    await session.get("/keys/")
+    key_input = await session.wait_for_element(5, "#key_input")
+    await key_input.send_keys(ENTER)
+    output = await session.get_element("#output")
+    assert await output.get_text() == "Enter was pressed"

@@ -4,31 +4,17 @@ import sys
 from asyncio import SelectorEventLoop
 
 import pytest
+import pytest_asyncio
 
 from wapiti_arsenic.subprocess import ThreadedSubprocessImpl, AsyncioSubprocessImpl
 
-pytestmark = [pytest.mark.asyncio]
 
-
-available_loops = [asyncio.SelectorEventLoop]
-try:
-    available_loops.append(asyncio.ProactorEventLoop)
-except AttributeError:
-    pass
-
-
-@pytest.fixture(params=available_loops)
-def event_loop(request):
-    loop = request.param()
-    yield loop
-    loop.close()
-
-
-@pytest.fixture(params=[ThreadedSubprocessImpl, AsyncioSubprocessImpl])
-async def impl(event_loop, request):
+@pytest_asyncio.fixture(params=[ThreadedSubprocessImpl, AsyncioSubprocessImpl])
+async def impl(request):
     if sys.platform == "win32":
+        loop = asyncio.get_running_loop()
         if (
-            isinstance(event_loop, SelectorEventLoop)
+            isinstance(loop, SelectorEventLoop)
             and request.param is AsyncioSubprocessImpl
         ):
             raise pytest.skip(
@@ -37,11 +23,13 @@ async def impl(event_loop, request):
     yield request.param()
 
 
+@pytest.mark.asyncio
 async def test_run_process(impl):
     output = await impl.run_process([sys.executable, "-c", 'print("hello")'])
     assert output.strip() == "hello"
 
 
+@pytest.mark.asyncio
 async def test_start_stop_process(impl, unused_tcp_port):
     proc = await impl.start_process(
         [sys.executable, __file__, str(unused_tcp_port)], sys.stdout

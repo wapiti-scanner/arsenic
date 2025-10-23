@@ -5,10 +5,10 @@
 # Default target when running `make`
 all: format lint test
 
-# Run tests
+# Run tests with coverage report
 test:
-	@echo "--- Running tests ---"
-	poetry run pytest
+	@echo "--- Running tests with coverage ---"
+	poetry run pytest --cov=src/wapiti_arsenic --cov-report=term-missing
 
 # Create sdist and wheel distributions
 release:
