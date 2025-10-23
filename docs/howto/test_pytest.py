@@ -1,14 +1,13 @@
 import asyncio
 
 import pytest
+import pytest_asyncio
 import uvicorn
 from starlette.applications import Starlette
 from starlette.responses import HTMLResponse
 from starlette.routing import Route
 
 from wapiti_arsenic import browsers, services, start_session, stop_session
-
-pytestmark = pytest.mark.asyncio
 
 
 async def index(request):
@@ -35,7 +34,7 @@ def build_app():
     return Starlette(routes=routes)
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def app():
     application = build_app()
     config = uvicorn.Config(application, host="127.0.0.1", port=0)
@@ -52,7 +51,7 @@ async def app():
         await task
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def session(app):
     session = await start_session(services.Geckodriver(), browsers.Firefox(), bind=app)
     try:
@@ -61,6 +60,7 @@ async def session(app):
         await stop_session(session)
 
 
+@pytest.mark.asyncio
 async def test_index(session):
     await session.get("/")
     title = await session.wait_for_element(5, "h1")

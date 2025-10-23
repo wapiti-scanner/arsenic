@@ -41,16 +41,21 @@ def build_app() -> Starlette:
     routes = [
         Route("/", render_view(jinja, "index.html")),
         Route("/html/", render_view(jinja, "form.html")),
-        Route("/form/", render_view(jinja, "data.html", process_form), methods=["POST"]),
+        Route(
+            "/form/", render_view(jinja, "data.html", process_form), methods=["POST"]
+        ),
         Route("/js/", render_view(jinja, "js.html")),
         Route("/cookie/", render_view(jinja, "data.html", process_cookies)),
         Route("/actions/", render_view(jinja, "actions.html")),
         Route("/screenshot/", render_view(jinja, "screenshot.html")),
         Route("/file/", render_view(jinja, "file_form.html")),
         Route(
-            "/file/", render_view(jinja, "file_data.html", process_file_form), methods=["POST"]
+            "/file/",
+            render_view(jinja, "file_data.html", process_file_form),
+            methods=["POST"],
         ),
         Route("/selectors/", render_view(jinja, "selector_types.html")),
+        Route("/keys/", render_view(jinja, "keys.html")),
     ]
     return Starlette(routes=routes)
 

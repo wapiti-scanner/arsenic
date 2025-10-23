@@ -1,13 +1,13 @@
 import json
 import os
-from contextlib import contextmanager
+from contextlib import contextmanager, asynccontextmanager
 from subprocess import check_call
 from typing import Any, AsyncContextManager, Callable, Dict, Optional, Type
 import asyncio
 import uvicorn
 
 import pytest
-from asyncio_extras import async_contextmanager
+import pytest_asyncio
 
 from wapiti_arsenic import Session, browsers, get_session, services
 from tests.utils import find_binary
@@ -90,7 +90,7 @@ def bsl_context():
         check_call(args + ["stop"])
 
 
-@async_contextmanager
+@asynccontextmanager
 async def get_remote_session(root_url: str):
     if "REMOTE_BROWSER" not in os.environ:
         raise pytest.skip("No remote browser configured (REMOTE_BROWSER)")
@@ -109,16 +109,16 @@ async def get_remote_session(root_url: str):
             yield session
 
 
-@pytest.fixture(
+@pytest_asyncio.fixture(
     params=[get_ff_session, get_chrome_session, get_remote_session, get_ie_session],
     ids=lambda func: func.__name__.split("_")[1],
 )
 async def session(root_url, request) -> Session:
-    async with request.param(root_url) as session:
-        yield session
+    async with request.param(root_url) as s:
+        yield s
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def root_url():
     app = build_app()
     config = uvicorn.Config(app, host="127.0.0.1", port=0)

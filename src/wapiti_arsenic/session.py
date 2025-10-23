@@ -387,7 +387,7 @@ def get_legacy_actions(devices: List[Dict[str, Any]]) -> Iterator[LegacyAction]:
 
 
 def transform_legacy_actions(
-    devices: List[Dict[str, Any]]
+    devices: List[Dict[str, Any]],
 ) -> Iterator[Tuple[str, str, Dict[str, Any]]]:
     for legacy_action in get_legacy_actions(devices):
         device_type = legacy_action.device["type"]

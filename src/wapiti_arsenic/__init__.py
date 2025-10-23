@@ -1,6 +1,7 @@
 import attr
 
 from wapiti_arsenic.browsers import Browser
+from wapiti_arsenic.errors import UnknownError
 from wapiti_arsenic.services import Service
 from wapiti_arsenic.session import Session
 
@@ -30,5 +31,9 @@ async def start_session(service: Service, browser: Browser, bind=""):
 
 
 async def stop_session(session: Session):
-    await session.close()
+    try:
+        await session.close()
+    except UnknownError as e:
+        if "marionette" not in str(e):
+            raise
     await session.driver.close()
