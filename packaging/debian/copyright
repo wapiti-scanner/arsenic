@@ -1,0 +1,8 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: wapiti-arsenic
+Source: https://github.com/wapiti-scanner/arsenic
+
+Files: *
+Copyright: 2022-2025 Nicolas Surribas, Jonas Obrist
+License: Apache-2.0
+

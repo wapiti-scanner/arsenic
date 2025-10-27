@@ -8,7 +8,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 
-Asynchronous webdriver client built on asyncio.
+Asynchronous webdriver client built on asyncio and using httpx.
 
 
 ## Quickstart

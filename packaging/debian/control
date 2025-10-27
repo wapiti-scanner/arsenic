@@ -1,0 +1,16 @@
+Source: wapiti-arsenic
+Section: python
+Priority: optional
+Maintainer: Nicolas Surribas <nicolas.surribas@gmail.com>
+Build-Depends: debhelper-compat (= 13), python3, python3-setuptools, python3-poetry-core
+Standards-Version: 4.6.2
+Homepage: https://github.com/wapiti-scanner/arsenic
+Rules-Requires-Root: no
+
+Package: python3-wapiti-arsenic
+Architecture: all
+Depends: ${misc:Depends}, ${python3:Depends}
+Description: Asynchronous WebDriver client based on httpx
+ Wapiti-Arsenic provides an asyncio-compatible WebDriver API wrapper
+ used for headless browser automation in the Wapiti vulnerability scanner.
+
