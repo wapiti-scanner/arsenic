@@ -117,7 +117,9 @@ class Connection:
 
         wrap_screen(data)
 
-        log.info("← Response %s %s (%d)", method, strip_auth(full_url), response.status_code)
+        log.info(
+            "← Response %s %s (%d)", method, strip_auth(full_url), response.status_code
+        )
         log.debug("Response data: %s", data)
 
         check_response_error(data=data, status=response.status_code)

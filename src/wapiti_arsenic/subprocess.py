@@ -44,8 +44,8 @@ class AsyncioSubprocessImpl(BaseSubprocessImpl):
         out, err = await process.communicate()
         if process.returncode != 0:
             raise Exception(err)
-        else:
-            return out.decode("utf-8")
+
+        return out.decode("utf-8")
 
     async def start_process(self, cmd: List[str], log_file):
         check_event_loop()
@@ -64,7 +64,9 @@ class AsyncioSubprocessImpl(BaseSubprocessImpl):
         try:
             await asyncio.wait_for(process.communicate(), 1)
         except asyncio.futures.TimeoutError:
-            log.warning("Could not terminate process", extra={"process": process, "impl": self})
+            log.warning(
+                "Could not terminate process", extra={"process": process, "impl": self}
+            )
 
 
 class ThreadedSubprocessImpl(BaseSubprocessImpl):
@@ -104,14 +106,15 @@ class ThreadedSubprocessImpl(BaseSubprocessImpl):
         try:
             process.communicate(timeout=1)
         except subprocess.TimeoutExpired:
-            log.warning("Could not terminate process", extra={"process": process, "impl": self})
+            log.warning(
+                "Could not terminate process", extra={"process": process, "impl": self}
+            )
 
 
 def get_subprocess_impl() -> BaseSubprocessImpl:
     if sys.platform == "win32":
         if isinstance(asyncio.get_event_loop(), asyncio.SelectorEventLoop):
             return ThreadedSubprocessImpl()
-        else:
-            return AsyncioSubprocessImpl()
+        return AsyncioSubprocessImpl()
     else:
         return AsyncioSubprocessImpl()

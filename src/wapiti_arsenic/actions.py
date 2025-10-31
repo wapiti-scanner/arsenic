@@ -30,8 +30,8 @@ class Tick:
     def encode(self, device: "Device") -> Dict[str, Any]:
         if device not in self.actions:
             return {"type": "pause", "duration": 0}
-        else:
-            return self.actions[device].payload
+
+        return self.actions[device].payload
 
 
 class DeviceType(Enum):

@@ -144,13 +144,15 @@ class MSEdgeDriver(Service):
 def auth_or_string(value):
     if value is None:
         return value
-    elif isinstance(value, Auth):
+
+    if isinstance(value, Auth):
         return value
-    elif isinstance(value, str) and value.count(":") == 1:
+
+    if isinstance(value, str) and value.count(":") == 1:
         username, password = value.split(":")
         return BasicAuth(username, password)
-    else:
-        raise TypeError()
+
+    raise TypeError()
 
 
 @dataclass
