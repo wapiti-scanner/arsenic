@@ -1,8 +1,7 @@
+import logging
 from typing import Union, Dict, Type, Any
 
-from structlog import get_logger
-
-log = get_logger()
+log = logging.getLogger(__name__)
 
 
 class ArsenicError(Exception):
@@ -99,11 +98,7 @@ def raise_exception(data: Dict[str, Any], status: int):
     exception_class = get(error)
     if exception_class in ERROR_CLASSES:
         log.error(
-            "error",
-            type=exception_class,
-            message=message,
-            stacktrace=stacktrace,
-            data=data,
-            status=status,
+            f"Error: {exception_class} - {message} (status={status})\n"
+            f"Stacktrace: {stacktrace}\nData: {data}"
         )
     raise exception_class(message, screen, stacktrace)
