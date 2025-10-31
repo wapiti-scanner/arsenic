@@ -1,7 +1,6 @@
 import socket
+from dataclasses import dataclass
 from typing import Union
-
-import attr
 
 
 def free_port() -> int:
@@ -23,9 +22,9 @@ def px_to_number(value: str) -> Union[int, float]:
         raise ValueError(f"{original!r} is not an number or <number>px value")
 
 
-@attr.s
+@dataclass
 class Rect:
-    x: float = attr.ib()
-    y: float = attr.ib()
-    width: float = attr.ib()
-    height: float = attr.ib()
+    x: float
+    y: float
+    width: float
+    height: float

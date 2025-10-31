@@ -1,10 +1,9 @@
 import base64
+from dataclasses import dataclass
 from functools import partial
 from io import BytesIO
 from pathlib import Path
 from typing import Awaitable, Callable, Any, List, Dict, Tuple, Iterator
-
-import attr
 
 from wapiti_arsenic import constants
 from wapiti_arsenic.connection import Connection, unwrap
@@ -370,10 +369,10 @@ legacy_actions = {
 }
 
 
-@attr.s
+@dataclass
 class LegacyAction:
-    device = attr.ib()
-    action = attr.ib()
+    device: Dict[str, Any]
+    action: Dict[str, Any]
 
 
 def get_legacy_actions(devices: List[Dict[str, Any]]) -> Iterator[LegacyAction]:

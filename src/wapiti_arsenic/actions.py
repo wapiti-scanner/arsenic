@@ -1,17 +1,16 @@
 import abc
+from dataclasses import dataclass
 from enum import Enum
 from typing import Sequence, Any, Iterator, List, Dict, Optional
-
-import attr
 
 from wapiti_arsenic import constants
 from wapiti_arsenic.session import Element
 
 
-@attr.s
+@dataclass
 class Action:
-    source = attr.ib()
-    payload = attr.ib()
+    source: "Device"
+    payload: Dict[str, Any]
 
 
 class Tick:

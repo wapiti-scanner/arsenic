@@ -1,8 +1,7 @@
 import abc
 import base64
 from typing import Dict
-
-import attr
+from dataclasses import dataclass
 
 
 class Auth(metaclass=abc.ABCMeta):
@@ -11,10 +10,10 @@ class Auth(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
 
-@attr.s
+@dataclass
 class BasicAuth(Auth):
-    username = attr.ib()
-    password = attr.ib()
+    username: str
+    password: str
 
     def get_headers(self):
         raw_token = f"{self.username}:{self.password}"
