@@ -1,4 +1,5 @@
-import attr
+from dataclasses import dataclass
+from typing import Optional
 
 from wapiti_arsenic.browsers import Browser
 from wapiti_arsenic.errors import UnknownError
@@ -6,12 +7,12 @@ from wapiti_arsenic.services import Service
 from wapiti_arsenic.session import Session
 
 
-@attr.s
+@dataclass
 class SessionContext:
-    service = attr.ib()
-    browser = attr.ib()
-    bind = attr.ib()
-    session = attr.ib(default=None)
+    service: Service
+    browser: Browser
+    bind: str
+    session: Optional[Session] = None
 
     async def __aenter__(self):
         self.session = await start_session(self.service, self.browser, self.bind)

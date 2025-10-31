@@ -2,10 +2,10 @@ import abc
 import asyncio
 import re
 import sys
+from dataclasses import dataclass
 from functools import partial
 from typing import List, TextIO, Optional
 
-import attr
 import httpx
 from packaging import version
 
@@ -69,12 +69,12 @@ class Service(metaclass=abc.ABCMeta):
         raise NotImplementedError()
 
 
-@attr.s
+@dataclass
 class Geckodriver(Service):
-    log_file = attr.ib(default=sys.stdout)
-    binary = attr.ib(default="geckodriver")
-    version_check = attr.ib(default=True)
-    start_timeout = attr.ib(default=15)
+    log_file: TextIO = sys.stdout
+    binary: str = "geckodriver"
+    version_check: bool = True
+    start_timeout: float = 15
 
     _version_re = re.compile(r"geckodriver (\d+\.\d+)")
 
@@ -109,11 +109,11 @@ class Geckodriver(Service):
         )
 
 
-@attr.s
+@dataclass
 class Chromedriver(Service):
-    log_file = attr.ib(default=sys.stdout)
-    binary = attr.ib(default="chromedriver")
-    start_timeout = attr.ib(default=15)
+    log_file: TextIO = sys.stdout
+    binary: str = "chromedriver"
+    start_timeout: float = 15
 
     async def start(self):
         port = free_port()
@@ -125,11 +125,11 @@ class Chromedriver(Service):
         )
 
 
-@attr.s
+@dataclass
 class MSEdgeDriver(Service):
-    log_file = attr.ib(default=sys.stdout)
-    binary = attr.ib(default="msedgedriver")
-    start_timeout = attr.ib(default=15)
+    log_file: TextIO = sys.stdout
+    binary: str = "msedgedriver"
+    start_timeout: float = 15
 
     async def start(self):
         port = free_port()
@@ -144,21 +144,24 @@ class MSEdgeDriver(Service):
 def auth_or_string(value):
     if value is None:
         return value
-    elif isinstance(value, Auth):
+
+    if isinstance(value, Auth):
         return value
-    elif isinstance(value, str) and value.count(":") == 1:
+
+    if isinstance(value, str) and value.count(":") == 1:
         username, password = value.split(":")
         return BasicAuth(username, password)
-    else:
-        raise TypeError()
+
+    raise TypeError()
 
 
-@attr.s
+@dataclass
 class Remote(Service):
-    url: str = attr.ib()
-    auth: Optional[Auth] = attr.ib(
-        default=None, converter=attr.converters.optional(auth_or_string)
-    )
+    url: str
+    auth: Optional[Auth] = None
+
+    def __post_init__(self):
+        self.auth = auth_or_string(self.auth)
 
     async def start(self):
         closers = []
@@ -175,12 +178,12 @@ class Remote(Service):
             raise
 
 
-@attr.s
+@dataclass
 class IEDriverServer(Service):
-    log_file = attr.ib(default=sys.stdout)
-    binary = attr.ib(default="IEDriverServer.exe")
-    log_level = attr.ib(default="FATAL")
-    start_timeout = attr.ib(default=15)
+    log_file: TextIO = sys.stdout
+    binary: str = "IEDriverServer.exe"
+    log_level: str = "FATAL"
+    start_timeout: float = 15
 
     async def start(self):
         port = free_port()

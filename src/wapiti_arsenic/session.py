@@ -1,10 +1,9 @@
 import base64
+from dataclasses import dataclass
 from functools import partial
 from io import BytesIO
 from pathlib import Path
 from typing import Awaitable, Callable, Any, List, Dict, Tuple, Iterator
-
-import attr
 
 from wapiti_arsenic import constants
 from wapiti_arsenic.connection import Connection, unwrap
@@ -22,15 +21,17 @@ def escape_value(value: str) -> str:
         for part in parts:
             result.append(f'"{part}"')
             result.append(", '\"', ")
+
         result = result[0:-1]
         if value.endswith('"'):
             return "".join(result) + ")"
-        else:
-            return "".join(result[:-1]) + ")"
-    elif '"' in value:
+
+        return "".join(result[:-1]) + ")"
+
+    if '"' in value:
         return f"'{value}'"
-    else:
-        return f'"{value}"'
+
+    return f'"{value}"'
 
 
 class RequestHelpers:
@@ -200,8 +201,8 @@ class Session(RequestHelpers):
                 await self.get_element(selector, selector_type)
             except NoSuchElement:
                 return True
-            else:
-                return False
+
+            return False
 
         return await self.wait(timeout, callback)
 
@@ -370,10 +371,10 @@ legacy_actions = {
 }
 
 
-@attr.s
+@dataclass
 class LegacyAction:
-    device = attr.ib()
-    action = attr.ib()
+    device: Dict[str, Any]
+    action: Dict[str, Any]
 
 
 def get_legacy_actions(devices: List[Dict[str, Any]]) -> Iterator[LegacyAction]:
