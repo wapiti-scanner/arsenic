@@ -25,6 +25,10 @@ for headless browser automation used in the Wapiti web vulnerability scanner.
 %{__python3} -m pip install --no-deps --root %{buildroot} --ignore-installed %{SOURCE1}
 
 %files
+%license %{python3_sitelib}/LICENSE
+%doc %{python3_sitelib}/README.md
+%{_bindir}/arsenic-check-ie11
+%{_bindir}/arsenic-configure-ie11
 %{python3_sitelib}/wapiti_arsenic*
 
 %changelog

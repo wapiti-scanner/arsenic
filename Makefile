@@ -2,7 +2,7 @@
 
 PACKAGE_NAME := wapiti-arsenic
 IMAGE_NAME_DEB := debian:testing
-IMAGE_NAME_RPM := fedora:40
+IMAGE_NAME_RPM := fedora:41
 
 .PHONY: all test release format lint docs clean clean-all deb rpm
 
@@ -56,7 +56,7 @@ rpm: release
 	docker run --rm \
 		-v $(PWD):/app \
 		-w /app \
-		fedora:40 /bin/bash -c "set -e; \
+		${IMAGE_NAME_RPM} /bin/bash -c "set -e; \
 		dnf update -y && \
 		dnf install -y rpm-build python3-devel python3-pip && \
 		rpmbuild --define '_topdir /app/build/rpm' -ba /app/build/rpm/SPECS/wapiti-arsenic.spec"
