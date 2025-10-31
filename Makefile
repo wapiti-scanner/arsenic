@@ -50,7 +50,7 @@ rpm: release
 	rm -rf build/rpm
 	mkdir -p build/rpm/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 	# Copy both tarball and wheel
-	cp dist/*.tar.gz build/rpm/SOURCES/wapiti-arsenic-28.4.tar.gz
+	cp dist/*.tar.gz build/rpm/SOURCES/wapiti-arsenic-28.5.tar.gz
 	cp dist/*.whl build/rpm/SOURCES/
 	cp packaging/wapiti-arsenic.spec build/rpm/SPECS/
 	docker run --rm \

@@ -1,5 +1,5 @@
 Name:           wapiti-arsenic
-Version:        28.4
+Version:        28.5
 Release:        1%{?dist}
 Summary:        Asynchronous WebDriver client used by Wapiti web scanner
 License:        Apache-2.0
@@ -9,7 +9,7 @@ Source1:        wapiti_arsenic-%{version}-py3-none-any.whl
 BuildArch:      noarch
 BuildRequires:  python3-devel
 BuildRequires:  python3-pip
-Requires:       python3, python3-httpx >= 0.27
+Requires:       python3, python3-httpx >= 0.27, python3-packaging >=23.0
 
 %description
 Wapiti-Arsenic provides an asyncio-compatible WebDriver API wrapper

@@ -9,7 +9,7 @@ Rules-Requires-Root: no
 
 Package: python3-wapiti-arsenic
 Architecture: all
-Depends: ${misc:Depends}, ${python3:Depends}
+Depends: ${misc:Depends}, ${python3:Depends}, python3-httpx (>= 0.27), python3-httpx (<< 1.0), python3-packaging (>= 23.0), python3-packaging (<< 26.0)
 Description: Asynchronous WebDriver client based on httpx
  Wapiti-Arsenic provides an asyncio-compatible WebDriver API wrapper
  used for headless browser automation in the Wapiti vulnerability scanner.
