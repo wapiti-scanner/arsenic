@@ -4,17 +4,17 @@ import json
 from functools import wraps
 from io import BytesIO
 from json import JSONDecodeError
+import logging
 from pathlib import Path
 from typing import Any, Tuple
 from urllib.parse import urlparse, urlunparse
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import httpx
-from structlog import get_logger
 
 from wapiti_arsenic import errors, constants
 
-log = get_logger()
+log = logging.getLogger(__name__)
 
 
 def wrap_screen(data):
@@ -95,34 +95,36 @@ class Connection:
         if method not in {"POST", "PUT"}:
             data = None
             header = None
+
         body = json.dumps(data) if data is not None else None
         full_url = self.prefix + url
-        log.info(
-            "request", url=strip_auth(full_url), method=method, header=header, body=body
-        )
+
+        log.info("→ Request %s %s", method, strip_auth(full_url))
+        if header or body:
+            log.debug("Headers: %s | Body: %s", header, body)
+
         response = await self.session.request(
             url=full_url, method=method, headers=header, content=body, timeout=timeout
         )
         response_body = await response.aread()
+
         try:
             data = json.loads(response_body)
         except JSONDecodeError as exc:
-            log.error("json-decode", body=response_body)
+            log.error("Failed to decode JSON from response: %s", exc)
+            log.debug("Response body: %s", response_body)
             data = {"error": "!internal", "message": str(exc), "stacktrace": ""}
+
         wrap_screen(data)
-        log.info(
-            "response",
-            url=strip_auth(full_url),
-            method=method,
-            body=body,
-            response=repr(response),
-            data=data,
-        )
+
+        log.info("← Response %s %s (%d)", method, strip_auth(full_url), response.status_code)
+        log.debug("Response data: %s", data)
+
         check_response_error(data=data, status=response.status_code)
         return response.status_code, data
 
     async def upload_file(self, path: Path) -> Path:
-        log.info("upload-file", path=path, resolved_path=path)
+        log.info("Uploading local file: %s", path)
         return path
 
     def prefixed(self, prefix: str) -> "Connection":
@@ -134,10 +136,12 @@ class RemoteConnection(Connection):
         fobj = BytesIO()
         with ZipFile(fobj, "w", ZIP_DEFLATED) as zf:
             zf.write(path, path.name)
+
         content = base64.b64encode(fobj.getvalue()).decode("utf-8")
         status, data = await self.request(
             url="/file", method="POST", data={"file": content}
         )
+
         value = unwrap(data.get("value", None))
-        log.info("upload-file", path=path, resolved_path=value)
+        log.info("File uploaded successfully: %s → %s", path, value)
         return Path(value)

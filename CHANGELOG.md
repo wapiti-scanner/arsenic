@@ -1,5 +1,17 @@
 # Changelog
 
+## 28.5
+
+* Remove structlog dependency
+
+## 28.4
+
+* Relax dependencies
+
+## 28.3
+
+* Use httpx for web requests
+
 ## 20.9
 
 * Added Changelog
